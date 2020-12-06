@@ -30,7 +30,11 @@ app.get("/", (req, res) =>
   })
 );
 
-app.use("/api/v1/books", bookRoutes);
+app.use(
+  "/api/v1/books",
+  passport.authenticate("jwt", { session: false }),
+  bookRoutes
+);
 app.use("/api/v1/auth", userRoutes);
 
 app.listen(port, () => {
