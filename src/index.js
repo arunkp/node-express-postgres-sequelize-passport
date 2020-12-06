@@ -2,8 +2,8 @@ import config from "dotenv";
 import express from "express";
 import passport from "passport";
 import bodyParser from "body-parser";
-import bookRoutes from "./server/routes/BookRoutes";
-import userRoutes from "./server/routes/UserRoutes";
+import bookRoutes from "./routes/BookRoutes";
+import userRoutes from "./routes/UserRoutes";
 import cors from "cors";
 
 config.config();
@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 // passport config
-require("./server/src/config/passport")(passport);
+require("./config/passport")(passport);
 
 const port = process.env.PORT || 8000;
 // when a random route is inputed
