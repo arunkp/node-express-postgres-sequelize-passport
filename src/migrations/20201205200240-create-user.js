@@ -16,7 +16,19 @@ module.exports = {
           type: Sequelize.STRING,
         },
         email: {
+          primaryKey: true,
           type: Sequelize.STRING,
+          unique: true,
+          allowNull: false,
+          validate: {
+            isEmail: true,
+          },
+          references: {
+            model: "Users",
+            key: "email",
+          },
+          onUpdate: "cascade",
+          onDelete: "cascade",
         },
         username: {
           primaryKey: true,
