@@ -27,6 +27,7 @@ class UserController {
   }
 
   static async loginUser(req, res) {
+    console.log(req.url);
     const { errors, isValid } = validateLoginForm(req.body);
     // check validation
     if (!isValid) {
@@ -45,9 +46,9 @@ class UserController {
           res.cookie("token", token, {
             expires: new Date(Date.now() + expiration),
             secure: false, // set to true if your using https
-            httpOnly: true,
+            // httpOnly: true,
           });
-          util.setSuccess(200, "You are now logged in!");
+          util.setSuccess(200, "Successful Login");
           return util.send(res);
         } else {
           util.setError(400, "Invalid User");

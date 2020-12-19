@@ -4,13 +4,22 @@ import passport from "passport";
 import bodyParser from "body-parser";
 import bookRoutes from "./routes/BookRoutes";
 import userRoutes from "./routes/UserRoutes";
+const cookieParser = require("cookie-parser");
 import cors from "cors";
 
 config.config();
 
 const app = express();
 
-app.use(cors());
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
+app.use(cors(corsConfig));
+app.options("*", cors(corsConfig));
+
+app.use(cookieParser());
 
 app.use(bodyParser.json());
 
@@ -29,6 +38,11 @@ app.get("/", (req, res) =>
     message: "Welcome to this API.",
   })
 );
+
+app.get("/logout", function (req, res) {
+  req.logout();
+  res.redirect("/");
+});
 
 app.use(
   "/api/v1/books",
