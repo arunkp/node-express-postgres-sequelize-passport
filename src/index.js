@@ -4,6 +4,7 @@ import passport from "passport";
 import bodyParser from "body-parser";
 import bookRoutes from "./routes/BookRoutes";
 import userRoutes from "./routes/UserRoutes";
+import crawlRoutes from "./routes/CrawlRoutes";
 const cookieParser = require("cookie-parser");
 import cors from "cors";
 
@@ -39,6 +40,12 @@ app.get("/", (req, res) =>
   })
 );
 
+app.get("/api/v1", (req, res) =>
+  res.status(200).send({
+    message: "Welcome to this API - From API.",
+  })
+);
+
 app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/");
@@ -49,7 +56,10 @@ app.use(
   passport.authenticate("jwt", { session: false }),
   bookRoutes
 );
+
 app.use("/api/v1/auth", userRoutes);
+
+app.use("/api/crawl", crawlRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on PORT ${port}`);
