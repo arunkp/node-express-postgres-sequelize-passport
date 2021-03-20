@@ -3,7 +3,7 @@ import UserService from "../services/UserService";
 import Util from "../utils/Utils";
 import validateRegisterForm from "../utils/validation/register";
 import validateLoginForm from "../utils/validation/login";
-import generateToken from "../utils/generateToken";
+// import generateToken from "../utils/generateToken";
 
 const util = new Util();
 
@@ -41,13 +41,6 @@ class UserController {
       let user = await UserService.loginUser(loginBody);
       if (user) {
         if (bcrypt.compareSync(loginBody.password, user.dataValues.password)) {
-          const { id, username } = user.dataValues;
-          const { token, expiration } = await generateToken(id, username);
-          res.cookie("token", token, {
-            expires: new Date(Date.now() + expiration),
-            secure: false, // set to true if your using https
-            // httpOnly: true,
-          });
           util.setSuccess(200, "Successful Login");
           return util.send(res);
         } else {
@@ -62,6 +55,15 @@ class UserController {
       util.setError(400, error.message);
       return util.send(res);
     }
+  }
+
+  /* GET request for logout page */
+  static async logoutUser(req, res, next) {
+    // var expireTime = new Date(req.session.cookie.expires) - new Date();
+    req.logout();
+    req.session.destroy(function () {
+      res.redirect("/");
+    });
   }
 }
 
