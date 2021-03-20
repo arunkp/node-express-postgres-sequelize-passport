@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon --exec babel-node ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "migrations": "npx sequelize-cli db:migrate",
     "db:g:seed": "sequelize-cli seed:generate --name",
     "db:seeds": "sequelize-cli db:seed:all"
   },
