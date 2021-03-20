@@ -37,24 +37,29 @@ class UserController {
 
     const loginBody = req.body;
 
-    try {
-      let user = await UserService.loginUser(loginBody);
-      if (user) {
-        if (bcrypt.compareSync(loginBody.password, user.dataValues.password)) {
-          util.setSuccess(200, "Successful Login");
-          return util.send(res);
-        } else {
-          util.setError(400, "Invalid User");
-          return util.send(res);
-        }
-      } else {
-        util.setError(400, "Invalid User");
-        return util.send(res);
-      }
-    } catch (error) {
-      util.setError(400, error.message);
-      return util.send(res);
-    }
+    // try {
+    //   let user = await UserService.loginUser(loginBody);
+    //   if (user) {
+    //     if (bcrypt.compareSync(loginBody.password, user.dataValues.password)) {
+    //       // res.cookie("token", token, {
+    //       //   expires: new Date(Date.now() + expiration),
+    //       //   secure: false, // set to true if your using https
+    //       //   // httpOnly: true,
+    //       // });
+    //       util.setSuccess(200, "Successful Login");
+    //       return util.send(res);
+    //     } else {
+    //       util.setError(400, "Invalid User");
+    //       return util.send(res);
+    //     }
+    //   } else {
+    //     util.setError(400, "Invalid User");
+    //     return util.send(res);
+    //   }
+    // } catch (error) {
+    //   util.setError(400, error.message);
+    //   return util.send(res);
+    // }
   }
 
   /* GET request for logout page */

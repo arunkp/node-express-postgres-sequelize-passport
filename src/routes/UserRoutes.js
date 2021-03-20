@@ -4,8 +4,8 @@ import UserController from "../controllers/UserController";
 const router = Router();
 
 router.post("/signup", UserController.createUser);
-router.post("/login", UserController.loginUser);
-router.post("/login", UserController.logoutUser);
+// router.post("/login", UserController.loginUser);
+router.post("/logout", UserController.logoutUser);
 // router.post("/", BookController.addBook);
 // router.get("/:id", BookController.getABook);
 // router.put("/:id", BookController.updatedBook);

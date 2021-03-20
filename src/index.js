@@ -1,5 +1,6 @@
 import config from "dotenv";
 import express from "express";
+import bcrypt from "bcrypt";
 import passport from "passport";
 import bodyParser from "body-parser";
 import bookRoutes from "./routes/BookRoutes";
@@ -28,7 +29,7 @@ passport.use(
       });
       if (user) {
         if (bcrypt.compareSync(password, user.dataValues.password)) {
-          return done(null, user);
+          return done(null, user.dataValues);
         } else {
           return done(null, false, { message: "Invalid credentials.\n" });
         }
@@ -41,13 +42,14 @@ passport.use(
 
 // tell passport how to serialize the user
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (userInfo, done) => {
+  console.log(userInfo);
   const user = await database.User.findOne({
     where: {
-      email: userCred.email,
+      email: userInfo.email,
     },
   });
   return done(null, user);
@@ -82,7 +84,7 @@ app.use(
     name: "_redisDemo",
     secret: process.env.SECRET,
     resave: false,
-    cookie: { secure: false, maxAge: 60000 }, // Set to secure:false and expire in 1 minute for demo purposes
+    cookie: { secure: false, maxAge: 160000 }, // Set to secure:false and expire in 1 minute for demo purposes
     saveUninitialized: true,
   })
 );
@@ -96,6 +98,14 @@ app.use(passport.session());
 const port = process.env.PORT || 8000;
 // when a random route is inputed
 
+app.post(
+  "/login",
+  passport.authenticate("local", { failureRedirect: "/login" }),
+  function (req, res) {
+    res.status(200).send();
+  }
+);
+
 app.get("/", (req, res) =>
   res.status(200).send({
     message: "Welcome to this API.",
@@ -107,7 +117,19 @@ app.get("/logout", function (req, res) {
   res.redirect("/");
 });
 
-app.use("/api/v1/books", bookRoutes);
+function isAuthenticated(req, res, next) {
+  // do any checks you want to in here
+
+  // CHECK THE USER STORED IN SESSION FOR A CUSTOM VARIABLE
+  // you can do this however you want with whatever variables you set up
+  console.log("auth==>", req.isAuthenticated());
+  if (req.isAuthenticated()) return next();
+
+  // IF A USER ISN'T LOGGED IN, THEN REDIRECT THEM SOMEWHERE
+  res.redirect("/");
+}
+
+app.use("/api/v1/books", isAuthenticated, bookRoutes);
 app.use("/api/v1/auth", userRoutes);
 
 app.listen(port, () => {
